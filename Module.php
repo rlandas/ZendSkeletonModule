@@ -15,14 +15,26 @@ use Zend\Mvc\MvcEvent;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\ModuleManager\ModuleManager;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ControllerProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ControllerProviderInterface, ServiceProviderInterface, ViewHelperProviderInterface
+class Module implements 
+		BootstrapListenerInterface, 
+		AutoloaderProviderInterface, 
+		ConfigProviderInterface, 
+		ControllerProviderInterface, 
+		ServiceProviderInterface, 
+		ViewHelperProviderInterface
 {
 
+	/**
+	 * Autoloader configuration
+	 *
+	 * @see \Zend\ModuleManager\Feature\AutoloaderProviderInterface::getAutoloaderConfig()
+	 */
 	public function getAutoloaderConfig ()
 	{
 		return array(
@@ -50,8 +62,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 	}
 
 	/**
-	 * Service Manager config for models, tables, etc
+	 * Configuration for service manager aware classes such as models, tables, etc
 	 *
+	 * @see \Zend\ModuleManager\Feature\ServiceProviderInterface::getServiceConfig()
 	 * @return array
 	 */
 	public function getServiceConfig ()
@@ -60,8 +73,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 	}
 
 	/**
-	 * Service Manager config for the Controllers
+	 * Configuration for controllers
 	 *
+	 * @see \Zend\ModuleManager\Feature\ControllerProviderInterface::getControllerConfig()
 	 * @return array
 	 */
 	public function getControllerConfig ()
@@ -69,10 +83,23 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		return include __DIR__ . '/config/module.controller.php';
 	}
 
+	/**
+	 * Configuration for view helpers
+	 *
+	 * @see \Zend\ModuleManager\Feature\ViewHelperProviderInterface::getViewHelperConfig()
+	 * @return array
+	 */
 	public function getViewHelperConfig ()
 	{
+		return include __DIR__ . '/config/module.viewhelper.php';
 	}
 
+	/**
+	 * Bootstrap listener
+	 *
+	 * @see \Zend\ModuleManager\FeatureBootstrapListenerInterface::onBootstrap()
+	 * @param unknown_type $e
+	 */
 	public function onBootstrap ($e)
 	{
 		// You may not need to do this if you're doing it elsewhere in your
